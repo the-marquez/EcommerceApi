@@ -1,4 +1,6 @@
 using EcommerceApi.Data;
+using EcommerceApi.Repositories.Contracts;
+using EcommerceApi.Repositories.Implementations;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
@@ -7,6 +9,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 var connstr = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>( (options) => options.UseSqlServer(connstr) );
+
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+
+builder.Services.AddAutoMapper( (config) => config.AddMaps(typeof(Program).Assembly) );
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddControllers();
