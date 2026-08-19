@@ -11,6 +11,7 @@ namespace EcommerceApi.Mapping
         {
             CreateMap<Category, CategoryDto>().ReverseMap();
             CreateMap<CreateCategoryDto, Category>().ReverseMap();
+            CreateMap<UpdateCategoryDto, Category>().ReverseMap();
         }
     }
 }
