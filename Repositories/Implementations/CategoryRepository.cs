@@ -42,10 +42,9 @@ namespace EcommerceApi.Repositories.Implementations
             return _db.Categories.OrderBy((c)=> c.Name).ToList();
         }
 
-        public Category GetCategory(int id)
+        public Category? GetCategoryById(int id)
         {
-            return _db.Categories.FirstOrDefault((c)=> c.Id == id) 
-                        ?? throw new InvalidOperationException($"Category with id {id} not found.");
+            return _db.Categories.FirstOrDefault((c)=> c.Id == id);
         }
 
         public bool Save()
