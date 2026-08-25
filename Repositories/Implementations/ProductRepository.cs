@@ -14,59 +14,127 @@ namespace EcommerceApi.Repositories.Implementations
             _db = db;
         }
 
-        public bool BuyProduct(int productId, int quantity)
+        public bool BuyProduct(string name, int quantity)
         {
-            throw new NotImplementedException();
+            if(string.IsNullOrWhiteSpace(name) || quantity <= 0)
+            {
+                return false;
+            }
+
+            var product = _db.Products.FirstOrDefault( (p)=> p.Name.ToLower().Trim() == name.ToLower().Trim());
+
+            if(product is null || product.Stock < quantity)
+            {
+                return false;
+            }
+
+            product.Stock -= quantity;
+            _db.Products.Update(product);
+
+            return Save();
         }
 
         public bool CreateProduct(Product product)
         {
-            throw new NotImplementedException();
+            if(product is null)
+            {
+                return false;
+            }
+
+            product.CreationDate = DateTime.Now;
+            product.UpdateDate = DateTime.Now;
+
+            _db.Products.Add(product);
+
+            return Save();
         }
 
         public bool DeleteProduct(Product product)
         {
-            throw new NotImplementedException();
+            if(product is null)
+            {
+                return false;
+            }
+
+            _db.Products.Remove(product);
+
+            return Save();
         }
 
         public Product? GetProduct(int id)
         {
-            throw new NotImplementedException();
+            if(id <= 0)
+            {
+                return null;
+            }
+
+            return _db.Products.FirstOrDefault(p => p.Id == id);
         }
 
-        public Product? GetProducts()
+        public ICollection<Product> GetProducts()
         {
-            throw new NotImplementedException();
+            return _db.Products.OrderBy((p)=> p.Name).ToList();
         }
 
         public ICollection<Product> GetProductsByCategory(int categoryId)
         {
-            throw new NotImplementedException();
+            if(categoryId <= 0)
+            {
+                return new List<Product>();
+            }
+
+            return _db.Products.Where(p => p.CategoryId == categoryId).OrderBy((p)=> p.Name).ToList();
         }
 
         public bool ProductExists(int productId)
         {
-            throw new NotImplementedException();
+            if(productId <= 0)
+            {
+                return false;
+            }
+
+            return _db.Products.Any(p => p.Id == productId);
         }
 
         public bool ProductExists(string productName)
         {
-            throw new NotImplementedException();
+            if(string.IsNullOrWhiteSpace(productName))
+            {
+                return false;
+            }
+
+            return _db.Products.Any(p => p.Name.ToLower().Trim() == productName.ToLower().Trim());
         }
 
         public bool Save()
         {
-            throw new NotImplementedException();
+            return _db.SaveChanges() >= 0;
         }
 
         public ICollection<Product> SearchProduct(string productName)
         {
-            throw new NotImplementedException();
+            if(string.IsNullOrWhiteSpace(productName))
+            {
+                return new List<Product>();
+            }
+
+            return _db.Products.Where( (p) => p.Name.ToLower().Trim().Contains(productName.ToLower().Trim()) )
+                                .OrderBy((p)=> p.Name)
+                                .ToList();
         }
 
         public bool UpdateProduct(Product product)
         {
-            throw new NotImplementedException();
+            if(product is null)
+            {
+                return false;
+            }
+
+            product.UpdateDate = DateTime.Now;
+
+            _db.Products.Update(product);
+
+            return Save();
         }
     }
 }
