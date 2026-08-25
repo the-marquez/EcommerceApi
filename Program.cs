@@ -10,7 +10,10 @@ var builder = WebApplication.CreateBuilder(args);
 var connstr = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>( (options) => options.UseSqlServer(connstr) );
 
+//Repositories
+
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 builder.Services.AddAutoMapper( (config) => config.AddMaps(typeof(Program).Assembly) );
 
