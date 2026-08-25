@@ -2,6 +2,7 @@
 using EcommerceApi.Data;
 using EcommerceApi.Models;
 using EcommerceApi.Repositories.Contracts;
+using Microsoft.EntityFrameworkCore;
 
 namespace EcommerceApi.Repositories.Implementations
 {
@@ -68,12 +69,14 @@ namespace EcommerceApi.Repositories.Implementations
                 return null;
             }
 
-            return _db.Products.FirstOrDefault(p => p.Id == id);
+            return _db.Products.Include(p => p.Category ).FirstOrDefault(p => p.Id == id);
         }
 
         public ICollection<Product> GetProducts()
         {
-            return _db.Products.OrderBy((p)=> p.Name).ToList();
+            return _db.Products.Include(p => p.Category )
+                                .OrderBy((p)=> p.Name)
+                                .ToList();
         }
 
         public ICollection<Product> GetProductsByCategory(int categoryId)

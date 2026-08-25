@@ -17,5 +17,6 @@ namespace EcommerceApi.Models.Dtos
         public DateTime CreationDate { get; set; } = DateTime.Now;
         public DateTime UpdateDate { get; set; }
         public int CategoryId { get; set; }
+        public string CategoryName { get; set; } = string.Empty;
     }
 }

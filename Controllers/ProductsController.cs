@@ -1,5 +1,6 @@
 
 using AutoMapper;
+using EcommerceApi.Models;
 using EcommerceApi.Models.Dtos;
 using EcommerceApi.Repositories.Contracts;
 using Microsoft.AspNetCore.Mvc;
@@ -11,11 +12,13 @@ namespace EcommerceApi.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IProductRepository _productRepository;
+        private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
 
-        public ProductsController(IProductRepository productRepository, IMapper mapper)
+        public ProductsController(IProductRepository productRepository, ICategoryRepository categoryRepository, IMapper mapper)
         {
             _productRepository = productRepository;
+            _categoryRepository = categoryRepository;
             _mapper = mapper;
         }
 
@@ -48,5 +51,45 @@ namespace EcommerceApi.Controllers
 
             return Ok(productDto);
         }
+
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult CreateProduct([FromBody] CreateProductDto createProductDto)
+        {
+            if(createProductDto is null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if(_productRepository.ProductExists(createProductDto.Name))
+            {
+                ModelState.AddModelError("CustomError", "Product already exists!");
+                return BadRequest(ModelState);
+            }
+
+            if(_categoryRepository.CategoryExists(createProductDto.CategoryId) == false)
+            {
+                ModelState.AddModelError("CustomError", "Category does not exist!");
+                return BadRequest(ModelState);
+            }
+
+            var product = _mapper.Map<Product>(createProductDto);
+
+            if (!_productRepository.CreateProduct(product))
+            {
+                ModelState.AddModelError("CustomError", $"Something went wrong when saving the record {product.Name}");
+                return StatusCode(500, ModelState);
+            }
+
+            var createdProduct = _productRepository.GetProduct(product.Id);
+            var productDto = _mapper.Map<ProductDto>(createdProduct);
+
+            return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, productDto);
+        }
+
     }
 }
