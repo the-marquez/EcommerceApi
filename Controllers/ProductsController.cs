@@ -91,5 +91,23 @@ namespace EcommerceApi.Controllers
             return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, productDto);
         }
 
+        [HttpGet("search/{categoryId}", Name = "GetProductByCategory")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult GetProductByCategory(int categoryId)
+        {
+            var products = _productRepository.GetProductsByCategory(categoryId);
+            if(products.Count == 0)
+            {
+                return NotFound($"No products found for category with id {categoryId}.");
+            }
+
+            var productDtos = _mapper.Map<IEnumerable<ProductDto>>(products);
+
+            return Ok(productDtos);
+        }
+
     }
 }

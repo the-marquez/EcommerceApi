@@ -86,7 +86,11 @@ namespace EcommerceApi.Repositories.Implementations
                 return new List<Product>();
             }
 
-            return _db.Products.Where(p => p.CategoryId == categoryId).OrderBy((p)=> p.Name).ToList();
+            return _db.Products
+                        .Include(p=> p.Category)
+                        .Where(p => p.CategoryId == categoryId)
+                        .OrderBy((p)=> p.Name)
+                        .ToList();
         }
 
         public bool ProductExists(int productId)
