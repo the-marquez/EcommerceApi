@@ -118,16 +118,23 @@ namespace EcommerceApi.Repositories.Implementations
             return _db.SaveChanges() >= 0;
         }
 
-        public ICollection<Product> SearchProduct(string productName)
+        public ICollection<Product> SearchProducts(string productName)
         {
             if(string.IsNullOrWhiteSpace(productName))
             {
                 return new List<Product>();
             }
 
-            return _db.Products.Where( (p) => p.Name.ToLower().Trim().Contains(productName.ToLower().Trim()) )
-                                .OrderBy((p)=> p.Name)
-                                .ToList();
+            var prodLower = productName.ToLower().Trim();
+
+            return _db.Products
+                        .Include(p => p.Category)
+                        .Where( (p) => 
+                            p.Name.ToLower().Trim().Contains(prodLower) || 
+                            p.Description.ToLower().Trim().Contains(prodLower) 
+                        )
+                        .OrderBy((p)=> p.Name)
+                        .ToList();
         }
 
         public bool UpdateProduct(Product product)

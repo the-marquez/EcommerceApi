@@ -7,7 +7,7 @@ namespace EcommerceApi.Repositories.Contracts
     {
         ICollection<Product> GetProducts();
         ICollection<Product> GetProductsByCategory(int categoryId);
-        ICollection<Product> SearchProduct(string productName);
+        ICollection<Product> SearchProducts(string productName);
         Product? GetProduct(int id);
         bool BuyProduct(string name, int quantity);
         bool ProductExists(int productId);

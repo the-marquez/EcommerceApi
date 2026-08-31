@@ -91,7 +91,7 @@ namespace EcommerceApi.Controllers
             return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, productDto);
         }
 
-        [HttpGet("search/{categoryId}", Name = "GetProductByCategory")]
+        [HttpGet("search/category/{categoryId:int}", Name = "GetProductByCategory")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -102,6 +102,24 @@ namespace EcommerceApi.Controllers
             if(products.Count == 0)
             {
                 return NotFound($"No products found for category with id {categoryId}.");
+            }
+
+            var productDtos = _mapper.Map<IEnumerable<ProductDto>>(products);
+
+            return Ok(productDtos);
+        }
+
+        [HttpGet("search/text/{productName}", Name = "GetProductByNameOrDescription")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult GetProductByNameOrDescription(string productName)
+        {
+            var products = _productRepository.SearchProducts(productName);
+            if(products.Count == 0)
+            {
+                return NotFound($"No products found for name {productName}.");
             }
 
             var productDtos = _mapper.Map<IEnumerable<ProductDto>>(products);
