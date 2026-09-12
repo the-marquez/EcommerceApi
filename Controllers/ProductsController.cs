@@ -127,7 +127,37 @@ namespace EcommerceApi.Controllers
             return Ok(productDtos);
         }
 
-        //Generado con IA
+        [HttpPatch("buy/{productName}/quantity/{quantity:int}", Name = "BuyProduct")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult BuyProduct(string productName, int quantity)
+        {
+            if(string.IsNullOrEmpty(productName) || quantity <= 0)
+            {
+                return BadRequest("Product name and quantity must be provided.");
+            }
+
+            bool productExists = _productRepository.ProductExists(productName);
+
+            if (!productExists)
+            {
+                return NotFound($"Product with name {productName} not found.");
+            }
+
+            if( !_productRepository.BuyProduct(productName, quantity))
+            {
+                return StatusCode(500, "An error occurred while processing the purchase.");
+            }
+
+            var units = quantity == 1 ? "unit" : "units";
+
+            return Ok($"Successfully purchased {quantity} {units} of {productName}.");
+        }
+
+
+
         [HttpPost("bulk")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
