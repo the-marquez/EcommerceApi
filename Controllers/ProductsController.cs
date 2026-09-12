@@ -156,6 +156,42 @@ namespace EcommerceApi.Controllers
             return Ok($"Successfully purchased {quantity} {units} of {productName}.");
         }
 
+        [HttpPut("{id}", Name = "UpdateProduct")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult UpdateProduct(int id, [FromBody] UpdateProductDto updateProductDto)
+        {
+            if(updateProductDto is null || id <= 0)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (!_productRepository.ProductExists(id))
+            {
+                return NotFound($"Product with id {id} not found.");
+            }
+
+            if (!_categoryRepository.CategoryExists(updateProductDto.CategoryId))
+            {
+                ModelState.AddModelError("CustomError", $"Category with id {updateProductDto.CategoryId} does not exist.");
+                return BadRequest(ModelState);
+            }
+
+            var product = _mapper.Map<Product>(updateProductDto);
+            product.Id = id;
+
+            if (!_productRepository.UpdateProduct(product))
+            {
+                ModelState.AddModelError("CustomError", $"Something went wrong when updating the record {product.Name}");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
 
 
         [HttpPost("bulk")]
