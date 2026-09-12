@@ -129,48 +129,49 @@ namespace EcommerceApi.Controllers
 
         //Generado con IA
         [HttpPost("bulk")]
-[ProducesResponseType(StatusCodes.Status201Created)]
-[ProducesResponseType(StatusCodes.Status400BadRequest)]
-[ProducesResponseType(StatusCodes.Status401Unauthorized)]
-[ProducesResponseType(StatusCodes.Status403Forbidden)]
-[ProducesResponseType(StatusCodes.Status500InternalServerError)]
-public IActionResult CreateProductsBulk([FromBody] IEnumerable<CreateProductDto> createProductDtos)
-{
-    if (createProductDtos is null || !createProductDtos.Any())
-    {
-        ModelState.AddModelError("CustomError", "The product collection cannot be empty.");
-        return BadRequest(ModelState);
-    }
-
-    var validProducts = new List<Product>();
-
-    foreach (var dto in createProductDtos)
-    {
-        if (_productRepository.ProductExists(dto.Name))
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult CreateProductsBulk([FromBody] IEnumerable<CreateProductDto> createProductDtos)
         {
-            ModelState.AddModelError("CustomError", $"Product '{dto.Name}' already exists.");
-            return BadRequest(ModelState);
+            
+            if (createProductDtos is null || !createProductDtos.Any())
+            {
+                ModelState.AddModelError("CustomError", "The product collection cannot be empty.");
+                return BadRequest(ModelState);
+            }
+
+            var validProducts = new List<Product>();
+
+            foreach (var dto in createProductDtos)
+            {
+                if (_productRepository.ProductExists(dto.Name))
+                {
+                    ModelState.AddModelError("CustomError", $"Product '{dto.Name}' already exists.");
+                    return BadRequest(ModelState);
+                }
+
+                if (!_categoryRepository.CategoryExists(dto.CategoryId))
+                {
+                    ModelState.AddModelError("CustomError", $"Category with id {dto.CategoryId} does not exist for product '{dto.Name}'.");
+                    return BadRequest(ModelState);
+                }
+
+                var product = _mapper.Map<Product>(dto);
+                validProducts.Add(product);
+            }
+
+            if (!_productRepository.CreateProducts(validProducts))
+            {
+                ModelState.AddModelError("CustomError", "Something went wrong when saving the records.");
+                return StatusCode(500, ModelState);
+            }
+
+            var createdProductDtos = _mapper.Map<IEnumerable<ProductDto>>(validProducts);
+            return CreatedAtAction(nameof(GetProducts), createdProductDtos);
         }
-
-        if (!_categoryRepository.CategoryExists(dto.CategoryId))
-        {
-            ModelState.AddModelError("CustomError", $"Category with id {dto.CategoryId} does not exist for product '{dto.Name}'.");
-            return BadRequest(ModelState);
-        }
-
-        var product = _mapper.Map<Product>(dto);
-        validProducts.Add(product);
-    }
-
-    if (!_productRepository.CreateProducts(validProducts))
-    {
-        ModelState.AddModelError("CustomError", "Something went wrong when saving the records.");
-        return StatusCode(500, ModelState);
-    }
-
-    var createdProductDtos = _mapper.Map<IEnumerable<ProductDto>>(validProducts);
-    return CreatedAtAction(nameof(GetProducts), createdProductDtos);
-}
 
     }
 }

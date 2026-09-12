@@ -12,6 +12,7 @@ namespace EcommerceApi.Repositories.Contracts
         bool CreateCategory(Category category);
         bool UpdateCategory(Category category);
         bool DeleteCategory(Category category);
+        bool CreateCategories(IEnumerable<Category> categories); //custom
         bool Save();
     }
 }

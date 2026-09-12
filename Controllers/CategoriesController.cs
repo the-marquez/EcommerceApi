@@ -137,5 +137,58 @@ namespace EcommerceApi.Controllers
             return NoContent();
         }
 
+        [HttpPost("bulk")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult CreateCategoriesBulk([FromBody] IEnumerable<CreateCategoryDto> createCategoryDtos)
+        {
+            if (createCategoryDtos is null || !createCategoryDtos.Any())
+            {
+                ModelState.AddModelError("CustomError", "The category collection cannot be empty.");
+                return BadRequest(ModelState);
+            }
+
+            var validCategories = new List<Category>();
+            var categoryNamesInPayload = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (var dto in createCategoryDtos)
+            {
+                if (string.IsNullOrWhiteSpace(dto.Name))
+                {
+                    ModelState.AddModelError("CustomError", "Category name cannot be empty.");
+                    return BadRequest(ModelState);
+                }
+
+                // Validación de duplicados en la misma petición
+                if (!categoryNamesInPayload.Add(dto.Name))
+                {
+                    ModelState.AddModelError("CustomError", $"Duplicate category name '{dto.Name}' in request body.");
+                    return BadRequest(ModelState);
+                }
+
+                // Validación de existencia en Base de Datos
+                if (_categoryRepository.CategoryExists(dto.Name))
+                {
+                    ModelState.AddModelError("CustomError", $"Category '{dto.Name}' already exists in database.");
+                    return BadRequest(ModelState);
+                }
+
+                var category = _mapper.Map<Category>(dto);
+                validCategories.Add(category);
+            }
+
+            if (!_categoryRepository.CreateCategories(validCategories))
+            {
+                ModelState.AddModelError("CustomError", "Something went wrong when saving the category records.");
+                return StatusCode(500, ModelState);
+            }
+
+            var categoryDtos = _mapper.Map<IEnumerable<CategoryDto>>(validCategories);
+            return CreatedAtAction(nameof(GetCategories), categoryDtos);
+        }
+
     }
 }

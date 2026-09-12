@@ -24,6 +24,12 @@ namespace EcommerceApi.Repositories.Implementations
             return _db.Categories.Any((c)=> c.Name.ToLower().Trim() == name.ToLower().Trim());
         }
 
+        public bool CreateCategories(IEnumerable<Category> categories)
+        {
+            _db.Categories.AddRange(categories);
+            return Save();
+        }
+
         public bool CreateCategory(Category category)
         {
             category.CreatedAt = DateTime.Now;
