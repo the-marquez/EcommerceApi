@@ -1,0 +1,14 @@
+
+docker run \
+  -e "ACCEPT_EULA=Y" \
+  -e "MSSQL_SA_PASSWORD=Sql2025_StrongPass" \
+  -e "MSSQL_PID=Developer" \
+  -p 1433:1433 \
+  --name sqlserver_2025_instance \
+  --hostname sqlserver_2025_instance \
+  -d mcr.microsoft.com/mssql/server:2025-latest
+
+Instalar sqlcmd para interactuar con la base de datos desde la terminal
+
+sqlcmd -S localhost,1433 -U sa -P "Sql2025_StrongPass" -C
+

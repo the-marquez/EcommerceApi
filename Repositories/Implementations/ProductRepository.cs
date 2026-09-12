@@ -50,6 +50,12 @@ namespace EcommerceApi.Repositories.Implementations
             return Save();
         }
 
+        public bool CreateProducts(IEnumerable<Product> products)
+        {
+            _db.Products.AddRange(products);
+            return Save();
+        }
+
         public bool DeleteProduct(Product product)
         {
             if(product is null)

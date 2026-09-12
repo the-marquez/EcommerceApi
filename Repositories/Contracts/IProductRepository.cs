@@ -15,6 +15,7 @@ namespace EcommerceApi.Repositories.Contracts
         bool CreateProduct(Product product);
         bool UpdateProduct(Product product);
         bool DeleteProduct(Product product);
+        bool CreateProducts(IEnumerable<Product> products); //Custom
         bool Save();
     }
 }
