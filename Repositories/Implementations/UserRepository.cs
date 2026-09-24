@@ -30,14 +30,26 @@ namespace EcommerceApi.Repositories.Implementations
             return _context.Users.Any( (usr) => usr.UserName.Trim().ToLower() == username.Trim().ToLower());
         }
 
-        public Task<UserLoginResponseDto> Login(UserLoginDto user)
+        public Task<UserLoginResponseDto> Login(UserLoginDto userLoginDto)
         {
             throw new NotImplementedException();
         }
 
-        public Task<User> Register(UserRegisterDto user)
+        public async Task<User> Register(CreateUserDto createUserDto)
         {
-            throw new NotImplementedException();
+            var encriptedPassword = BCrypt.Net.BCrypt.HashPassword(createUserDto.Password);
+            var user = new User
+            {
+                Name = createUserDto.Name,
+                UserName = createUserDto.UserName ?? "No Username",
+                Role = createUserDto.Role,
+                Password = encriptedPassword
+            };
+
+            _context.Users.Add( user );
+            await _context.SaveChangesAsync();
+
+            return user;
         }
     }
 }

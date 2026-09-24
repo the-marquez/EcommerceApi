@@ -9,8 +9,8 @@ namespace EcommerceApi.Repositories.Contracts
         ICollection<User> GetUsers();
         User? GetUser(int id);
         bool IsUniqueUser(string username);
-        Task<UserLoginResponseDto> Login(UserLoginDto user);
-        Task<User> Register(UserRegisterDto user);
+        Task<UserLoginResponseDto> Login(UserLoginDto userLoginDto);
+        Task<User> Register(CreateUserDto createUserDto);
     }
 }
 
