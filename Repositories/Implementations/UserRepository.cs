@@ -1,9 +1,13 @@
 
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using EcommerceApi.Data;
 using EcommerceApi.Models;
 using EcommerceApi.Models.Dtos;
 using EcommerceApi.Repositories.Contracts;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace EcommerceApi.Repositories.Implementations
 {
@@ -65,6 +69,40 @@ namespace EcommerceApi.Repositories.Implementations
                     Message = "Credenciales Incorrectas!"
                 };
             }
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            if (string.IsNullOrWhiteSpace(_secretKey))
+            {
+                throw new InvalidOperationException("Secret Key No Configurada!");
+            }
+
+            var key = Encoding.UTF8.GetBytes(_secretKey!);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[]
+                {
+                    new Claim("id", user.Id.ToString()),
+                    new Claim("username", user.UserName),
+                    new Claim(ClaimTypes.Role, user.Role ?? "")
+                }),
+                Expires = DateTime.UtcNow.AddHours(2),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+
+            return new UserLoginResponseDto
+            {
+                Token = tokenHandler.WriteToken(token),
+                User = new UserRegisterDto
+                {
+                    UserName = user.UserName,
+                    Name = user.Name,
+                    Password = user.Password ?? ""
+                },
+                Message = "Usuario autenticado correctamente!"
+            };
 
         }
 
