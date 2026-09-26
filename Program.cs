@@ -14,6 +14,7 @@ builder.Services.AddDbContext<ApplicationDbContext>( (options) => options.UseSql
 
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddAutoMapper( (config) => config.AddMaps(typeof(Program).Assembly) );
 
