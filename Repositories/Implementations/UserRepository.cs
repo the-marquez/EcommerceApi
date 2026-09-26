@@ -33,7 +33,7 @@ namespace EcommerceApi.Repositories.Implementations
 
         public bool IsUniqueUser(string username)
         {
-            return _context.Users.Any( (usr) => usr.UserName.Trim().ToLower() == username.Trim().ToLower());
+            return !_context.Users.Any( (usr) => usr.UserName.Trim().ToLower() == username.Trim().ToLower());
         }
 
         public async Task<UserLoginResponseDto> Login(UserLoginDto userLoginDto)

@@ -31,7 +31,7 @@ namespace EcommerceApi.Controllers
             return Ok(dtos);
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet("{id:int}", Name = "GetUserById")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -49,13 +49,35 @@ namespace EcommerceApi.Controllers
             return Ok(dto);
         }
 
-        [HttpPost]
+        [HttpPost("register")]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public IActionResult CreateUser(CreateUserDto createUserDto)
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public async Task<IActionResult> CreateUser([FromBody] CreateUserDto createUserDto)
         {
-            
+            if( createUserDto is null || !ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (string.IsNullOrWhiteSpace(createUserDto.UserName))
+            {
+                return BadRequest("Usuario Invalido!");
+            }
+
+            if( !_userRepository.IsUniqueUser(createUserDto.UserName))
+            {
+                return BadRequest("Este usuario ya esta en uso!");
+            }
+
+            var result = await _userRepository.Register( createUserDto );
+
+            if( result is null)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ups!, Algo salio mal en el proceso de registro!");
+            }
+
+            return CreatedAtRoute(nameof(GetUserById), new {id=result.Id}, result);
         }
 
 
