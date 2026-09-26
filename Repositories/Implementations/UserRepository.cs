@@ -99,7 +99,8 @@ namespace EcommerceApi.Repositories.Implementations
                 {
                     UserName = user.UserName,
                     Name = user.Name,
-                    Password = user.Password ?? ""
+                    Password = user.Password ?? "",
+                    Role = user.Role
                 },
                 Message = "Usuario autenticado correctamente!"
             };

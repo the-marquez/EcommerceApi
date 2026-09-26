@@ -80,6 +80,26 @@ namespace EcommerceApi.Controllers
             return CreatedAtRoute(nameof(GetUserById), new {id=result.Id}, result);
         }
 
+        [HttpPost("login")]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> UserLogin([FromBody] UserLoginDto userLoginDto)
+        {
+            if( userLoginDto is null || !ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var user = await _userRepository.Login( userLoginDto );
+
+            if( user is null)
+            {
+                return Unauthorized();
+            }
+
+            return Ok(user);
+        }
 
     }
 }
