@@ -26,11 +26,13 @@ namespace EcommerceApi.Controllers
 
         [HttpGet]
         [AllowAnonymous]
+        [ResponseCache(Duration = 15)] //15 segundos de cache
         [EnableCors( PolicyNames.AllowAnyOrigin )]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public IActionResult GetCategories()
         {
+            Console.WriteLine("Get Categories | Origen");
             var categories = _categoryRepository.GetCategories();
             var categoryDtos = _mapper.Map<IEnumerable<CategoryDto>>(categories);
             return Ok(categoryDtos);

@@ -59,6 +59,12 @@ builder.Services.AddCors((options) =>
     });
 } );
 
+builder.Services.AddResponseCaching((options) =>
+{
+    options.UseCaseSensitivePaths = true;
+    options.MaximumBodySize = 1024;
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -80,7 +86,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseCors("AllowAnyOrigin");
-
+app.UseResponseCaching();
 app.UseAuthentication();
 app.UseAuthorization();
 
