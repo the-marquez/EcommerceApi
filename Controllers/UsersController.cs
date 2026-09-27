@@ -1,5 +1,6 @@
 
 using AutoMapper;
+using EcommerceApi.Constants;
 using EcommerceApi.Models.Dtos;
 using EcommerceApi.Repositories.Contracts;
 using Microsoft.AspNetCore.Authorization;
@@ -23,6 +24,7 @@ namespace EcommerceApi.Controllers
         }
 
         [HttpGet]
+        [ResponseCache(CacheProfileName = CacheProfiles.ProfileName20s )] //20 segundos de cache
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public IActionResult GetUsers()

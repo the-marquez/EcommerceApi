@@ -4,6 +4,7 @@ using EcommerceApi.Data;
 using EcommerceApi.Repositories.Contracts;
 using EcommerceApi.Repositories.Implementations;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
@@ -45,7 +46,15 @@ builder.Services.AddAuthentication((options) =>
 });
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
-builder.Services.AddControllers();
+builder.Services.AddControllers((options) =>
+{
+    //Perfil 1 - 10s cache
+    options.CacheProfiles.Add( CacheProfiles.ProfileName10s , CacheProfiles.ProfileConf10s );
+
+    //Perfil 2 - 20s cache
+    options.CacheProfiles.Add( CacheProfiles.ProfileName20s , CacheProfiles.ProfileConf20s );
+
+} );
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
@@ -62,7 +71,7 @@ builder.Services.AddCors((options) =>
 builder.Services.AddResponseCaching((options) =>
 {
     options.UseCaseSensitivePaths = true;
-    options.MaximumBodySize = 1024;
+    options.MaximumBodySize = 1024 * 1024; //1MB
 });
 
 var app = builder.Build();

@@ -26,7 +26,8 @@ namespace EcommerceApi.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        [ResponseCache(Duration = 15)] //15 segundos de cache
+        // [ResponseCache(Duration = 15)] //15 segundos de cache
+        [ResponseCache(CacheProfileName = CacheProfiles.ProfileName10s )] //10 segundos
         [EnableCors( PolicyNames.AllowAnyOrigin )]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
