@@ -1,8 +1,11 @@
+using System.Text;
 using EcommerceApi.Constants;
 using EcommerceApi.Data;
 using EcommerceApi.Repositories.Contracts;
 using EcommerceApi.Repositories.Implementations;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +21,28 @@ builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddAutoMapper( (config) => config.AddMaps(typeof(Program).Assembly) );
+
+var secretKey = builder.Configuration.GetValue<string>("ApiSettings:SecretKey");
+var key = ( !string.IsNullOrEmpty(secretKey) ) 
+                ? secretKey 
+                : throw new InvalidOperationException("Secret Key No Configurada!");
+
+builder.Services.AddAuthentication((options) =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer((options) =>
+{
+    options.RequireHttpsMetadata = false;  //desactiva https, en produccion debe ser true.
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+      ValidateIssuerSigningKey = true,
+      IssuerSigningKey = new    SymmetricSecurityKey( Encoding.UTF8.GetBytes( key ) ), //validar firma del token
+      ValidateIssuer = false,
+      ValidateAudience = false //no se validara la audiencia, a menos que se quiera restringir a alguien
+    };
+});
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddControllers();
@@ -56,6 +81,7 @@ app.UseHttpsRedirection();
 
 app.UseCors("AllowAnyOrigin");
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

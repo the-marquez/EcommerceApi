@@ -4,11 +4,13 @@ using EcommerceApi.Constants;
 using EcommerceApi.Models;
 using EcommerceApi.Models.Dtos;
 using EcommerceApi.Repositories.Contracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EcommerceApi.Controllers
 {
+    [Authorize(Roles ="admin")]
     [ApiController]
     [Route("api/[controller]")]
     [EnableCors( PolicyNames.AllowAnyOrigin )]
@@ -23,6 +25,7 @@ namespace EcommerceApi.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         [EnableCors( PolicyNames.AllowAnyOrigin )]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -34,6 +37,7 @@ namespace EcommerceApi.Controllers
         }
 
         [HttpGet("{id:int}", Name = "GetCategory")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

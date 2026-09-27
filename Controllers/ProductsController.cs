@@ -3,10 +3,12 @@ using AutoMapper;
 using EcommerceApi.Models;
 using EcommerceApi.Models.Dtos;
 using EcommerceApi.Repositories.Contracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EcommerceApi.Controllers
 {
+    [Authorize(Roles ="admin")]
     [ApiController]
     [Route("api/[controller]")]
     public class ProductsController : ControllerBase
@@ -23,6 +25,7 @@ namespace EcommerceApi.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -34,6 +37,7 @@ namespace EcommerceApi.Controllers
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
