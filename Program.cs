@@ -1,4 +1,5 @@
 using System.Text;
+using Asp.Versioning;
 using EcommerceApi.Constants;
 using EcommerceApi.Data;
 using EcommerceApi.Repositories.Contracts;
@@ -57,6 +58,22 @@ builder.Services.AddControllers((options) =>
 } );
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+var apiVersioningBuilder = builder.Services.AddApiVersioning((options) =>
+{
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.DefaultApiVersion = new ApiVersion(1,0);
+    options.ReportApiVersions = true;
+    options.ApiVersionReader = ApiVersionReader.Combine(
+        new QueryStringApiVersionReader("api-version") //api-version=1.0
+    );
+});
+
+apiVersioningBuilder.AddApiExplorer((options) =>
+{
+    options.GroupNameFormat = "'v'VVV"; //v1,v2,vv3,etc. example: GET: api/v1/products
+    options.SubstituteApiVersionInUrl = true; //api/v{apiVersion}/products
+});
 
 builder.Services.AddCors((options) =>
 {
