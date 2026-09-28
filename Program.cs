@@ -1,11 +1,11 @@
 using System.Text;
 using Asp.Versioning;
+using EcommerceApi.configurations;
 using EcommerceApi.Constants;
 using EcommerceApi.Data;
 using EcommerceApi.Repositories.Contracts;
 using EcommerceApi.Repositories.Implementations;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
@@ -49,31 +49,28 @@ builder.Services.AddAuthentication((options) =>
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddControllers((options) =>
 {
-    //Perfil 1 - 10s cache
     options.CacheProfiles.Add( CacheProfiles.ProfileName10s , CacheProfiles.ProfileConf10s );
-
-    //Perfil 2 - 20s cache
     options.CacheProfiles.Add( CacheProfiles.ProfileName20s , CacheProfiles.ProfileConf20s );
-
 } );
+
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApi(options=> options.AddDocumentTransformer<BearerSecuritySchemeTransformer>());
 
-var apiVersioningBuilder = builder.Services.AddApiVersioning((options) =>
+var apiVersioningBuilder = builder.Services.AddApiVersioning((config) =>
 {
-    options.AssumeDefaultVersionWhenUnspecified = true;
-    options.DefaultApiVersion = new ApiVersion(1,0);
-    options.ReportApiVersions = true;
-    options.ApiVersionReader = ApiVersionReader.Combine(
-        new QueryStringApiVersionReader("api-version") //api-version=1.0
+    config.DefaultApiVersion = new ApiVersion(2, 0);
+    config.ApiVersionReader = ApiVersionReader.Combine(
+        new QueryStringApiVersionReader("api-version"),
+        new UrlSegmentApiVersionReader() // Necesario para que funcione en la ruta /api/v1/
     );
+}).AddMvc()
+.AddApiExplorer((config) =>
+{
+    config.GroupNameFormat = "'v'VVV";
+    config.SubstituteApiVersionInUrl = true;
 });
 
-apiVersioningBuilder.AddApiExplorer((options) =>
-{
-    options.GroupNameFormat = "'v'VVV"; //v1,v2,vv3,etc. example: GET: api/v1/products
-    options.SubstituteApiVersionInUrl = true; //api/v{apiVersion}/products
-});
+apiVersioningBuilder.AddOpenApi();
 
 builder.Services.AddCors((options) =>
 {
@@ -96,20 +93,20 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.MapOpenApi().WithDocumentPerVersion();
     // Scalar: http://localhost:{port}/scalar
     app.MapScalarApiReference((options) =>
     {
         options.WithTitle("Ecommerce API");
-        options.WithTheme( ScalarTheme.Alternate );
+        options.WithTheme( ScalarTheme.Default );
         options.WithDefaultHttpClient(
             ScalarTarget.CSharp,
             ScalarClient.HttpClient
         );
     } );
-}
+} 
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 
 app.UseCors("AllowAnyOrigin");
 app.UseResponseCaching();

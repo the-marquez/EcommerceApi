@@ -1,4 +1,5 @@
 
+using Asp.Versioning;
 using AutoMapper;
 using EcommerceApi.Constants;
 using EcommerceApi.Models;
@@ -10,9 +11,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EcommerceApi.Controllers
 {
-    [Authorize(Roles ="admin")]
+    [ApiVersion("1.0")]
+    [ApiVersion("2.0")]
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
+    [Authorize(Roles ="admin")]
     [EnableCors( PolicyNames.AllowAnyOrigin )]
     public class CategoriesController : ControllerBase
     {
@@ -26,6 +29,7 @@ namespace EcommerceApi.Controllers
 
         [HttpGet]
         [AllowAnonymous]
+        [MapToApiVersion("1.0")]
         // [ResponseCache(Duration = 15)] //15 segundos de cache
         [ResponseCache(CacheProfileName = CacheProfiles.ProfileName10s )] //10 segundos
         [EnableCors( PolicyNames.AllowAnyOrigin )]
@@ -37,6 +41,21 @@ namespace EcommerceApi.Controllers
             var categories = _categoryRepository.GetCategories();
             var categoryDtos = _mapper.Map<IEnumerable<CategoryDto>>(categories);
             return Ok(categoryDtos);
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        [MapToApiVersion("2.0")]
+        // [ResponseCache(Duration = 15)] //15 segundos de cache
+        [ResponseCache(CacheProfileName = CacheProfiles.ProfileName10s )] //10 segundos
+        [EnableCors( PolicyNames.AllowAnyOrigin )]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public IActionResult GetCategoriesV2()
+        {
+            var categories = _categoryRepository.GetCategories();
+            var categoryDtos = _mapper.Map<IEnumerable<CategoryDto>>(categories);
+            return Ok(new { data = categoryDtos });
         }
 
         [HttpGet("{id:int}", Name = "GetCategory")]

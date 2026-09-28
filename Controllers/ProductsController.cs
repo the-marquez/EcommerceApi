@@ -1,4 +1,5 @@
 
+using Asp.Versioning;
 using AutoMapper;
 using EcommerceApi.Models;
 using EcommerceApi.Models.Dtos;
@@ -8,9 +9,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EcommerceApi.Controllers
 {
+    [ApiVersion("1.0")]
     [Authorize(Roles ="admin")]
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     public class ProductsController : ControllerBase
     {
         private readonly IProductRepository _productRepository;
