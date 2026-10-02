@@ -1,4 +1,5 @@
 
+using Asp.Versioning;
 using AutoMapper;
 using EcommerceApi.Models.Dtos;
 using EcommerceApi.Repositories.Contracts;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace EcommerceApi.Controllers
 {
     [ApiController]
+    [ApiVersion("2.0")]
     [Route("api/v{version:apiVersion}/products")]
     public class ProductsV2Controller : ControllerBase
     {
@@ -23,6 +25,7 @@ namespace EcommerceApi.Controllers
         }
         
         [HttpGet]
+        [MapToApiVersion("2.0")]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
