@@ -27,6 +27,7 @@ namespace EcommerceApi.Controllers
         }
 
         [HttpGet]
+        [MapToApiVersion("1.0")]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -39,6 +40,7 @@ namespace EcommerceApi.Controllers
         }
 
         [HttpGet("{id}")]
+        [MapToApiVersion("1.0")]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -59,6 +61,7 @@ namespace EcommerceApi.Controllers
         }
 
         [HttpPost]
+        [MapToApiVersion("1.0")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -98,6 +101,7 @@ namespace EcommerceApi.Controllers
         }
 
         [HttpGet("search/category/{categoryId:int}", Name = "GetProductByCategory")]
+        [MapToApiVersion("1.0")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -116,6 +120,7 @@ namespace EcommerceApi.Controllers
         }
 
         [HttpGet("search/text/{productName}", Name = "GetProductByNameOrDescription")]
+        [MapToApiVersion("1.0")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -134,6 +139,7 @@ namespace EcommerceApi.Controllers
         }
 
         [HttpPatch("buy/{productName}/quantity/{quantity:int}", Name = "BuyProduct")]
+        [MapToApiVersion("1.0")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -163,6 +169,7 @@ namespace EcommerceApi.Controllers
         }
 
         [HttpPut("{id}", Name = "UpdateProduct")]
+        [MapToApiVersion("1.0")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -201,6 +208,7 @@ namespace EcommerceApi.Controllers
 
 
         [HttpPost("bulk")]
+        [MapToApiVersion("1.0")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]

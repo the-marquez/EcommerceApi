@@ -26,6 +26,7 @@ namespace EcommerceApi.Controllers
         }
 
         [HttpGet]
+        [MapToApiVersion("1.0")]
         [ResponseCache(CacheProfileName = CacheProfiles.ProfileName20s )] //20 segundos de cache
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -38,6 +39,7 @@ namespace EcommerceApi.Controllers
         }
 
         [HttpGet("{id:int}", Name = "GetUserById")]
+        [MapToApiVersion("1.0")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -56,6 +58,7 @@ namespace EcommerceApi.Controllers
         }
 
         [HttpPost("register")]
+        [MapToApiVersion("1.0")]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -88,6 +91,7 @@ namespace EcommerceApi.Controllers
         }
 
         [HttpPost("login")]
+        [MapToApiVersion("1.0")]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

@@ -59,6 +59,7 @@ namespace EcommerceApi.Controllers
         }
 
         [HttpGet("{id:int}", Name = "GetCategory")]
+        [MapToApiVersion("1.0")]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -77,6 +78,7 @@ namespace EcommerceApi.Controllers
         }
 
         [HttpPost]
+        [MapToApiVersion("1.0")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -107,6 +109,7 @@ namespace EcommerceApi.Controllers
         }
 
         [HttpPatch("{id:int}", Name = "UpdateCategory")]
+        [MapToApiVersion("1.0")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -144,6 +147,7 @@ namespace EcommerceApi.Controllers
         }
 
         [HttpDelete("{id:int}", Name = "DeleteCategory")]
+        [MapToApiVersion("1.0")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -168,6 +172,7 @@ namespace EcommerceApi.Controllers
         }
 
         [HttpPost("bulk")]
+        [MapToApiVersion("1.0")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
