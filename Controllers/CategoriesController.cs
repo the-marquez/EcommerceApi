@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EcommerceApi.Controllers
 {
-    // [ApiVersion("1.0")]
+    // [ApiVersion("1.0")] //en caso de no usar ApiVersionNeutral
     // [ApiVersion("2.0")]
     [ApiVersionNeutral] //Para endpoints o controllers que no tengan versionamiento o que comparten mas de una version
     [ApiController]

@@ -113,7 +113,10 @@ namespace EcommerceApi.Controllers
             return Ok(user);
         }
 
-        [HttpPost("obsolete")]
+        [HttpPost("endpoint-test")]
+        [MapToApiVersion("1.0")]
+        [AllowAnonymous]
+        [Obsolete("Este Endpoint es obsoleto, favor no usarlo mas...")]
         public IActionResult Test()
         {
             return Ok("Test endpoint is working!");
