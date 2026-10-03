@@ -12,9 +12,7 @@ namespace EcommerceApi.Extensions
             this IServiceCollection services,
             IConfiguration configuration)
         {
-            var secretKey = configuration.GetValue<string>(
-                "ApiSettings:SecretKey"
-            );
+            var secretKey = configuration.GetValue<string>("Security:Jwt:Key");
 
             if (string.IsNullOrWhiteSpace(secretKey))
                 throw new InvalidOperationException("Secret Key no configurada.");
