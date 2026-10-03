@@ -116,7 +116,7 @@ namespace EcommerceApi.Controllers
         [HttpPost("endpoint-test")]
         [MapToApiVersion("1.0")]
         [AllowAnonymous]
-        [Obsolete("Este Endpoint es obsoleto, favor no usarlo mas...")]
+        [Obsolete("Este Endpoint es obsoleto, favor no usarlo mas...")] //En asp.net 10 no funciona automaticamente, lo hace hasta asp.net 11
         public IActionResult Test()
         {
             return Ok("Test endpoint is working!");
