@@ -113,5 +113,11 @@ namespace EcommerceApi.Controllers
             return Ok(user);
         }
 
+        [HttpPost("obsolete")]
+        public IActionResult Test()
+        {
+            return Ok("Test endpoint is working!");
+        }
+
     }
 }
