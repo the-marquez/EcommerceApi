@@ -5,6 +5,7 @@ using EcommerceApi.Repositories.Contracts;
 using EcommerceApi.Repositories.Implementations;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,11 @@ builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddAutoMapper( (config) => config.AddMaps(typeof(Program).Assembly) );
+
+//Integración de Identity con Entity Framework Core
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
 
 builder.Services.AddJwtAuthentication( builder.Configuration );
 
