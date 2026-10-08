@@ -60,7 +60,8 @@ if (app.Environment.IsDevelopment())
     app.MapScalarDocumentation(); //extension
 } 
 
-// app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.UseHttpsRedirection();
 app.UseCors("AllowAnyOrigin");
 app.UseResponseCaching();
 app.UseAuthentication();

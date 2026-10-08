@@ -15,8 +15,8 @@ namespace EcommerceApi.Models.Dtos
         [Range(0, double.MaxValue, ErrorMessage = "Price must be a positive value.")]
         public decimal? Price { get; set; }
 
-        [Required]
         public string? ImgUrl { get; set; }
+        public IFormFile? Image { get; set; }
 
         [Required] //prod-001-blk-m
         public string? SKU { get; set; }

@@ -16,7 +16,8 @@ namespace EcommerceApi.Models
         [Range(0, double.MaxValue, ErrorMessage = "Price must be a positive value.")]
         [Column(TypeName = "decimal(18,2)")]
         public decimal Price { get; set; } = 0.0m;
-        public string ImgUrl { get; set; } = string.Empty;
+        public string? ImgUrl { get; set; }
+        public string? ImgUrlLocal { get; set; }
 
         [Required] //prod-001-blk-m
         public string SKU { get; set; } = string.Empty;

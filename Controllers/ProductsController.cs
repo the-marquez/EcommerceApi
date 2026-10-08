@@ -67,7 +67,7 @@ namespace EcommerceApi.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult CreateProduct([FromBody] CreateProductDto createProductDto)
+        public IActionResult CreateProduct([FromForm] CreateProductDto createProductDto)
         {
             if(createProductDto is null)
             {
@@ -87,6 +87,41 @@ namespace EcommerceApi.Controllers
             }
 
             var product = _mapper.Map<Product>(createProductDto);
+
+            //Image
+            if(createProductDto.Image != null && createProductDto.Image.Length > 0)
+            {
+                string filename = product.Id + "-" + Guid.NewGuid().ToString() + Path.GetExtension( createProductDto.Image.FileName );
+               
+                var imagesFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "ProductsImages");
+               
+                if(!Directory.Exists(imagesFolder))
+                {
+                    Directory.CreateDirectory(imagesFolder);
+                }
+                
+                var filePath = Path.Combine(imagesFolder, filename);
+                
+                FileInfo fileInfo = new FileInfo(filePath);
+
+                if( fileInfo.Exists ){
+                    fileInfo.Delete();
+                }
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    createProductDto.Image.CopyTo(stream);
+                }
+
+                var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.Value}{HttpContext.Request.PathBase.Value}";
+
+                product.ImgUrl = $"{baseUrl}/ProductsImages/{filename}";
+                product.ImgUrlLocal = filePath;
+            }
+            else
+            {
+                product.ImgUrl = "https://placehold.co/600x400";
+            }
 
             if (!_productRepository.CreateProduct(product))
             {
@@ -176,7 +211,7 @@ namespace EcommerceApi.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult UpdateProduct(int id, [FromBody] UpdateProductDto updateProductDto)
+        public IActionResult UpdateProduct(int id, [FromForm] UpdateProductDto updateProductDto)
         {
             if(updateProductDto is null || id <= 0)
             {
@@ -196,6 +231,41 @@ namespace EcommerceApi.Controllers
 
             var product = _mapper.Map<Product>(updateProductDto);
             product.Id = id;
+
+            //Image
+            if(updateProductDto.Image != null && updateProductDto.Image.Length > 0)
+            {
+                string filename = product.Id + "-" + Guid.NewGuid().ToString() + Path.GetExtension( updateProductDto.Image.FileName );
+               
+                var imagesFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "ProductsImages");
+               
+                if(!Directory.Exists(imagesFolder))
+                {
+                    Directory.CreateDirectory(imagesFolder);
+                }
+                
+                var filePath = Path.Combine(imagesFolder, filename);
+                
+                FileInfo fileInfo = new FileInfo(filePath);
+
+                if( fileInfo.Exists ){
+                    fileInfo.Delete();
+                }
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    updateProductDto.Image.CopyTo(stream);
+                }
+
+                var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.Value}{HttpContext.Request.PathBase.Value}";
+
+                product.ImgUrl = $"{baseUrl}/ProductsImages/{filename}";
+                product.ImgUrlLocal = filePath;
+            }
+            else
+            {
+                product.ImgUrl = "https://placehold.co/600x400";
+            }
 
             if (!_productRepository.UpdateProduct(product))
             {
