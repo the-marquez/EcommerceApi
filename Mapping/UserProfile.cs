@@ -9,7 +9,7 @@ namespace EcommerceApi.Mapping
     {
         public UserProfile()
         {
-            CreateMap<User, UserDto>().ReverseMap();
+            CreateMap<ApplicationUser, UserDto>().ReverseMap();
             CreateMap<ApplicationUser, CreateUserDto>().ReverseMap();
             CreateMap<ApplicationUser, UserLoginDto>().ReverseMap();
             CreateMap<ApplicationUser, UserLoginResponseDto>().ReverseMap();
