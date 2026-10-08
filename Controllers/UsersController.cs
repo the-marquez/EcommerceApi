@@ -2,6 +2,7 @@
 using Asp.Versioning;
 using AutoMapper;
 using EcommerceApi.Constants;
+using EcommerceApi.Models;
 using EcommerceApi.Models.Dtos;
 using EcommerceApi.Repositories.Contracts;
 using Microsoft.AspNetCore.Authorization;
@@ -32,18 +33,18 @@ namespace EcommerceApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public IActionResult GetUsers()
         {
-            var users = _userRepository.GetUsers();
+            ICollection<ApplicationUser> users = _userRepository.GetUsers();
             var dtos = _mapper.Map<List<UserDto>>(users);
             
             return Ok(dtos);
         }
 
-        [HttpGet("{id:int}", Name = "GetUserById")]
+        [HttpGet("{id}", Name = "GetUserById")]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public IActionResult GetUserById(int id)
+        public IActionResult GetUserById(string id)
         {
             var user = _userRepository.GetUser(id);
 

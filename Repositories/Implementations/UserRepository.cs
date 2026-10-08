@@ -35,19 +35,19 @@ namespace EcommerceApi.Repositories.Implementations
             _secretKey = configuration.GetValue<string>("Security:Jwt:Key");
         }
 
-        public User? GetUser(int id)
+        public ApplicationUser? GetUser(string id)
         {
-            return _context.Users.FirstOrDefault((usr)=> usr.Id == id);
+            return _context.ApplicationUsers.FirstOrDefault((usr)=> usr.Id == id);
         }
 
-        public ICollection<User> GetUsers()
+        public ICollection<ApplicationUser> GetUsers()
         {
-            return _context.Users.OrderBy((usr)=> usr.Name ).ToList();
+            return _context.ApplicationUsers.OrderBy((usr)=> usr.UserName ).ToList();
         }
 
         public bool IsUniqueUser(string username)
         {
-            return !_context.Users.Any( (usr) => usr.UserName.Trim().ToLower() == username.Trim().ToLower());
+            return !_context.ApplicationUsers.Any( (usr) => usr.UserName!.Trim().ToLower() == username.Trim().ToLower());
         }
 
         public async Task<UserLoginResponseDto> Login(UserLoginDto userLoginDto)
